@@ -29,7 +29,19 @@ export default {
 	},
 	methods: {
 		salvar() {
-			console.log(this.usuario)
+			// console.log(this.usuario)
+			this.$http.post('usuarios.json', this.usuario)
+				.then(resp => {
+					if(resp) {
+						this.limpar()
+					}
+				})
+				.catch(err =>  err)	
+			
+		},
+		limpar() {
+			this.usuario.nome = '',
+			this.usuario.email = ''
 		}
 	}
 
