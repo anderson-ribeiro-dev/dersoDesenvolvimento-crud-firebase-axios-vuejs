@@ -14,6 +14,30 @@
 			<b-button @click.prevent="salvar"
 				size="lg" variant="primary">Salvar</b-button>
 		</b-card>
+		<b-card class="mt-3">
+			<table class="table">
+				<thead>
+					<tr>
+						<th scope="col">#</th>
+						<th scope="col">Nome</th>
+						<th scope="col">E-mail</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr v-for="(user, index) in usuarios" :key="index">
+						<th scope="row"></th>
+						<td>{{ user.nome }}</td>
+						<td>{{ user.email }}</td>
+						<td>
+							<b-button class="mr-2" size="lg" variant="info">Editar</b-button>
+							<b-button size="lg" variant="danger"> Excluir</b-button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</b-card>
+
 	</div>
 </template>
 
@@ -21,11 +45,15 @@
 export default {
 	data() {
 		return {
+			usuarios: [],
 			usuario: {
 				nome: '',
 				email: ''
 			}
 		}
+	},
+	created(){
+		this.obterUsuarios()
 	},
 	methods: {
 		salvar() {
@@ -33,11 +61,20 @@ export default {
 			this.$http.post('usuarios.json', this.usuario)
 				.then(resp => {
 					if(resp) {
+						this.obterUsuarios()
 						this.limpar()
 					}
 				})
 				.catch(err =>  err)	
-			
+		},
+		obterUsuarios() {
+			this.$http.get('usuarios.json', this.usuario)
+				.then(resp => {
+					if(resp) {
+						this.usuarios = resp.data	
+					}
+				})
+				.catch(err => err)
 		},
 		limpar() {
 			this.usuario.nome = '',
