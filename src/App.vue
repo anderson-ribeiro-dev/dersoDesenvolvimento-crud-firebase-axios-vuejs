@@ -42,7 +42,11 @@
 </template>
 
 <script>
+
+// import axios from 'axios' //axios local
+
 export default {
+	nome: 'app',
 	data() {
 		return {
 			usuarios: [],
@@ -68,6 +72,7 @@ export default {
 				.catch(err =>  err)	
 		},
 		obterUsuarios() {
+			// axios.get('usuarios.json', this.usuario) axios local
 			this.$http.get('usuarios.json', this.usuario)
 				.then(resp => {
 					if(resp) {
