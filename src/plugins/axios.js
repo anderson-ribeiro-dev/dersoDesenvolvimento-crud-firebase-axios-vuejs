@@ -1,12 +1,23 @@
 import Vue from 'vue'
 import axios from 'axios'
 
+//setar headers, axios global
+// axios.defaults.headers.common['Authorization'] = 'abc123'
+// axios.defaults.headers.get['Accepts'] = 'aplplications/json'
+
 Vue.use({
     install(Vue) {
         // Vue.prototype.$http = axios
         //instâncias vue-axios, pode ter várias
         Vue.prototype.$http = axios.create({
-            baseURL: process.env.VUE_APP_BASE_URL
+            baseURL: process.env.VUE_APP_BASE_URL,
+            headers: {
+                "Authorization": "abc123"
+                //somente get
+                // get: {
+                //     "Authorization": "abc123"
+                // }
+            }
         })
 
         //intercepatando requisições, mudar métodos 

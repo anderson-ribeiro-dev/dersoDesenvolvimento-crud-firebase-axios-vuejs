@@ -80,6 +80,7 @@ export default {
 					}
 				})
 				.catch(err => err)
+				// this.$http.defaults.headers.common['Authorization'] = 'abc123'// setar headers nos métodos
 		},
 		limpar() {
 			this.usuario.nome = '',
