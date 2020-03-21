@@ -1,6 +1,9 @@
 <template>
 	<div id="app" class="container">
 		<h1>HTTP com Axios</h1>
+		<b-alert show dismissible v-for="mensagem in mensagens" 
+			:key="mensagem.texto"
+			:variant="mensagem.tipo">{{ mensagem.texto }}</b-alert>
 		<b-card>
 			<b-form-group label="Nome:">
 				<b-form-input type="text" size="lg"
@@ -49,6 +52,7 @@ export default {
 	nome: 'app',
 	data() {
 		return {
+			mensagens: [],
 			usuarios: [],
 			id: null,
 			usuario: {
@@ -71,7 +75,14 @@ export default {
 					if(resp) {
 						this.obterUsuarios()
 						this.limpar()
+						this.mensagens.push({
+							texto: 'Operação realizada com sucesso!',
+							tipo: 'success'
+						})
 					}
+					setTimeout(() => {
+						this.mensagens = []
+					}, 2000);
 				})
 				.catch(err =>  err)	
 
@@ -81,7 +92,7 @@ export default {
 			this.$http.get('usuarios.json', this.usuario)
 				.then(resp => {
 					if(resp) {
-						this.usuarios = resp.data	
+						this.usuarios = resp.data
 					}
 				})
 				.catch(err => err)
@@ -97,14 +108,42 @@ export default {
 					if(res) {
 						this.obterUsuarios()
 						this.limpar()
+						this.mensagens.push({
+							texto: 'Operação realizada com sucesso!',
+							tipo: 'success'
+						})
 					}
+					setTimeout(() => {
+						this.mensagens = []
+					}, 2000);
+
+				})
+				.catch(err => {
+					if(err) {
+						this.mensagens.push({
+							texto: 'Problema ao excluir dados!',
+							tipo: 'danger'
+						})
+					}
+					setTimeout(() => {
+						this.mensagens = []
+					}, 2000);
 				})
 		},
 		limpar() {
 			this.id = null
 			this.usuario.nome = '',
-			this.usuario.email = ''
-		}
+			this.usuario.email = '',
+			this.mensagens = []
+		},
+
+		makeToast(variant = null) {
+			this.$bvToast.toast('Operação realizado com sucesso!', {
+				title: `Variant ${variant || 'default'}`,
+				variant: variant,
+				solid: true
+			})
+		}	
 	}
 
 	
