@@ -25,13 +25,13 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr v-for="(user, index) in usuarios" :key="index">
+					<tr v-for="(user, id) in usuarios" :key="id">
 						<th scope="row"></th>
 						<td>{{ user.nome }}</td>
 						<td>{{ user.email }}</td>
 						<td>
-							<b-button class="mr-2" size="lg" variant="info">Editar</b-button>
-							<b-button size="lg" variant="danger"> Excluir</b-button>
+							<b-button class="mr-2" size="lg" variant="info" @click="editar(id)">Editar</b-button>
+							<b-button size="lg" variant="danger" @click="excluir(id)"> Excluir</b-button>
 						</td>
 					</tr>
 				</tbody>
@@ -50,6 +50,7 @@ export default {
 	data() {
 		return {
 			usuarios: [],
+			id: null,
 			usuario: {
 				nome: '',
 				email: ''
@@ -62,7 +63,10 @@ export default {
 	methods: {
 		salvar() {
 			// console.log(this.usuario)
-			this.$http.post('usuarios.json', this.usuario)
+			const metodo = this.id ? 'patch' : 'post' //se tiver id atualiza 
+			const finalUrl = this.id ? `/${this.id}.json/` : '.json' //firebase
+
+			this.$http[metodo](`/usuarios${finalUrl}`, this.usuario)
 				.then(resp => {
 					if(resp) {
 						this.obterUsuarios()
@@ -70,6 +74,7 @@ export default {
 					}
 				})
 				.catch(err =>  err)	
+
 		},
 		obterUsuarios() {
 			// axios.get('usuarios.json', this.usuario) axios local
@@ -82,7 +87,21 @@ export default {
 				.catch(err => err)
 				// this.$http.defaults.headers.common['Authorization'] = 'abc123'// setar headers nos métodos
 		},
+		editar(id) {
+			this.id = id
+			this.usuario = { ...this.usuarios[id] }	//pega o id, e criando um novo objeto
+		},
+		excluir(id) {
+			this.$http.delete(`/usuarios/${id}.json`)
+				.then(res => {
+					if(res) {
+						this.obterUsuarios()
+						this.limpar()
+					}
+				})
+		},
 		limpar() {
+			this.id = null
 			this.usuario.nome = '',
 			this.usuario.email = ''
 		}
